@@ -1,3 +1,4 @@
+# type: ignore
 # app.py
 from products import produtos_oficiais
 from contagem import estoque

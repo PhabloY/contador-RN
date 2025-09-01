@@ -11,35 +11,56 @@ raw_list = [
 
 def process_raw_list(raw):
     """
-    Process a raw list of stock items into a standardized list of dictionaries.
-
-    Each dictionary contains:
-        - quantidade: integer representing quantity
-        - produto: string representing product name
-
-    Features:
-        - Strips extra spaces
-        - Separates quantity and product using the first "-"
-        - Avoids duplicates based on quantity + product name (case-insensitive)
+    Processa a lista bruta de itens e lida com duplicatas interativamente.
+    Opções para duplicatas:
+        (m) manter separado
+        (r) remover duplicata
+        (s) somar quantidades
     """
-    cleaned_stock = []
-    seen = set()  # to avoid duplicates
+    estoque = []
+    # dict para rastrear duplicatas pelo nome do produto (lowercase)
+    produtos = {}
 
     for item in raw:
-        if "-" in item:
-            quantity_str, product = item.split("-", 1)
-            quantity = int(quantity_str.strip())
-            product = product.strip()
+        if "-" not in item:
+            continue
 
-            # Use a key to detect duplicates
-            key = f"{quantity}-{product.lower()}"
-            if key not in seen:
-                cleaned_stock.append(
-                    {"quantidade": quantity, "produto": product})
-                seen.add(key)
+        quantity_str, product = item.split("-", 1)
+        quantity = int(quantity_str.strip())
+        product = product.strip()
+        key = product.lower()
 
-    return cleaned_stock
+        if key in produtos:
+            print(f"\n⚠️ Duplicata encontrada: '{product}'")
+            print(
+                f"Já existe no estoque: {produtos[key]['quantidade']}x {produtos[key]['produto']}")
+            print(f"Novo item encontrado: {quantity}x {product}")
+
+            choice = input(
+                "Deseja (m) manter separado, (r) remover duplicata, ou (s) somar quantidades? [m/r/s]: ").lower().strip()
+
+            if choice == "m":
+                estoque.append({"quantidade": quantity, "produto": product})
+            elif choice == "r":
+                print("→ Ignorado.")
+            elif choice == "s":
+                produtos[key]["quantidade"] += quantity
+                print(
+                    f"→ Quantidade somada! Agora {produtos[key]['quantidade']}x {product}")
+            else:
+                print("→ Opção inválida, mantendo separado por padrão.")
+                estoque.append({"quantidade": quantity, "produto": product})
+        else:
+            novo_item = {"quantidade": quantity, "produto": product}
+            estoque.append(novo_item)
+            produtos[key] = novo_item
+
+    return estoque
 
 
-# Final list ready to be imported into app.py
+# Final list pronta
 estoque = process_raw_list(raw_list)
+
+print("\n📦 Estoque final:")
+for item in estoque:
+    print(f"{item['quantidade']}x {item['produto']}")
