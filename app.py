@@ -24,7 +24,6 @@ def corrigir_nome(produto, lista_oficial):
     """Corrige o nome usando fuzzy matching, mantendo acentos do nome oficial."""
     if not produto.strip():
         return ""
-
     produto_norm = remove_accents(produto).lower()
     lista_norm = [remove_accents(p).lower() for p in lista_oficial]
 
@@ -42,7 +41,18 @@ def corrigir_nome(produto, lista_oficial):
 
 
 def digitar_estoque():
-    time.sleep(5)  # tempo para posicionar o cursor no sistema
+    try:
+        delay_item = float(entry_delay_item.get())
+        delay_enter = float(entry_delay_enter.get())
+    except ValueError:
+        messagebox.showerror(
+            "Erro", "Insira valores válidos de tempo em segundos.")
+        return
+
+    messagebox.showinfo(
+        "Atenção", "Posicione o cursor no sistema. Digitação começa em 5 segundos.")
+    time.sleep(5)  # tempo para posicionar o cursor
+
     for item in estoque:
         quantidade = item.get("quantidade", 0)
         produto_nome = item.get("produto", "").strip()
@@ -57,30 +67,27 @@ def digitar_estoque():
         # Usa clipboard para suportar acentos
         pyperclip.copy(texto_para_digitar)
         pyautogui.hotkey("ctrl", "v")
+        time.sleep(delay_enter)
         pyautogui.press("enter")
+        time.sleep(delay_item)
 
     messagebox.showinfo("Sucesso", "Digitação automática concluída!")
-
 
 # =============================
 # Interface Gráfica
 # =============================
+
+
 root = tk.Tk()
 root.title("📦 Automação de Contagem")
-root.geometry("500x600")
+root.geometry("550x650")
 root.resizable(False, False)
 
 # Centralizar a janela
 root.update_idletasks()
-x = (root.winfo_screenwidth() - 500) // 2
-y = (root.winfo_screenheight() - 600) // 2
+x = (root.winfo_screenwidth() - 550) // 2
+y = (root.winfo_screenheight() - 650) // 2
 root.geometry(f"+{x}+{y}")
-
-# Ícone opcional
-try:
-    root.iconbitmap("icon.ico")
-except tk.TclError:
-    pass
 
 # Frame principal com canvas e scrollbar
 frame_main = tk.Frame(root)
@@ -90,10 +97,8 @@ canvas = tk.Canvas(frame_main)
 scrollbar = tk.Scrollbar(frame_main, orient="vertical", command=canvas.yview)
 scrollable_frame = tk.Frame(canvas)
 
-scrollable_frame.bind(
-    "<Configure>",
-    lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-)
+scrollable_frame.bind("<Configure>", lambda e: canvas.configure(
+    scrollregion=canvas.bbox("all")))
 
 canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 canvas.configure(yscrollcommand=scrollbar.set)
@@ -118,13 +123,29 @@ label_preview = tk.Label(
     borderwidth=1,
     padx=10,
     pady=10,
-    wraplength=450
+    wraplength=500
 )
 label_preview.pack(pady=10, fill="x")
 
+# Inputs para configurar delays
+frame_delays = tk.Frame(scrollable_frame)
+frame_delays.pack(pady=10, fill="x")
+
+tk.Label(frame_delays, text="⏱ Tempo entre Enter (segundos):").grid(
+    row=0, column=0, sticky="w")
+entry_delay_enter = tk.Entry(frame_delays)
+entry_delay_enter.insert(0, "0.2")  # valor padrão
+entry_delay_enter.grid(row=0, column=1)
+
+tk.Label(frame_delays, text="⏱ Tempo entre itens (segundos):").grid(
+    row=1, column=0, sticky="w")
+entry_delay_item = tk.Entry(frame_delays)
+entry_delay_item.insert(0, "0.5")  # valor padrão
+entry_delay_item.grid(row=1, column=1)
+
 # Botão de digitação
 botao_iniciar = tk.Button(
-    root,
+    scrollable_frame,
     text="✅ Iniciar Digitação",
     command=digitar_estoque,
     bg="#28a745",
