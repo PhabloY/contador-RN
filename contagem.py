@@ -16,9 +16,9 @@
 
 raw_list = [
     "18- Molh Grill 1,05kg",        # erro no nome
-    "15 -Molho Barbcue 1,05kg",     # erro no nome
-    "31 - Molho Chipotl 1,05kg",    # erro no nome
-    "7- Molho Barbecue 1,05kg",     # correto
+    "15 -Molo Barbcue 1,05kg",     # erro no nome
+    "31 - Molho Chpotl 1,05kg",    # erro no nome
+    "7- Molho Brbecue 1,05kg",     # correto
     "20 - Ketchp Real 1,05kg",      # erro no nome
     "3- Molho Trtaro 1,05kg"        # erro no nome
 ]
