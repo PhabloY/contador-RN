@@ -442,4 +442,5 @@ produtos_oficiais = [
     "Palito Escaldado 100g",
     "Refil Gás p/ Maçarico 227g Campgás",
     "Rosquinha nata 250g"
+    "Ketchup Heinz Curry 397g"
 ]
