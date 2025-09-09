@@ -441,6 +441,7 @@ produtos_oficiais = [
     "Molho Yakissoba 500 ML Cepera",
     "Palito Escaldado 100g",
     "Refil Gás p/ Maçarico 227g Campgás",
-    "Rosquinha nata 250g"
-    "Ketchup Heinz Curry 397g"
+    "Rosquinha nata 250g",
+    "Ketchup Heinz Curry 397g",
+    "Molho Tártaro kisabor 1,05kg",
 ]

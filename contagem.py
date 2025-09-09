@@ -1,7 +1,7 @@
 
 # Raw list examples (pasted from WhatsApp)
 raw_list = [
-    "18- Molho Grill 1,05kg",
+    "18- Molho Grill Junior 1,05kg",
     "15 -Molho barbecue 1,05kg",
     "31 - Molho Chipotle 1,05kg",
     "7- Molho Barbecue 1,05kg",
@@ -17,7 +17,7 @@ raw_list = [
     "31 - Molho Chpotl 1,05kg",    # erro no nome
     "7- Molho Brbecue 1,05kg",     # correto
     "20 - Ketchp Real 1,05kg",      # erro no nome
-    "3- Molho Trtaro 1,05kg"        # erro no nome
+    "3- Molho Trtaro kisabor 1,05kg"        # erro no nome
 ]
 
 

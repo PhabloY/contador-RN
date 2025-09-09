@@ -9,15 +9,6 @@ import time
 import tkinter as tk
 from tkinter import messagebox
 import unicodedata
-import re
-
-# =============================
-# Ajustes/flags (faça tuning aqui)
-# =============================
-DEBUG = False
-MIN_SCORE_TOKEN_SORT = 80    # token_sort_ratio mínimo para aceitar
-MIN_SCORE_PARTIAL = 90       # partial_ratio mínimo para aceitar
-MIN_SHARED_TOKENS = 1        # número mínimo de tokens em comum
 
 # =============================
 # Funções auxiliares
@@ -29,98 +20,20 @@ def remove_accents(text: str) -> str:
     return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
 
-def tokenize_core(text: str):
-    """
-    Retorna tokens 'úteis' do texto: lower, sem acentos, sem pontuação,
-    removendo números e unidades (g, kg, ml, l, etc).
-    """
-    t = remove_accents(text).lower()
-    # substitui tudo que não for letra/número por espaço
-    t = re.sub(r'[^a-z0-9\s]', ' ', t)
-    parts = [p.strip() for p in t.split() if p.strip()]
-    tokens = []
-    for p in parts:
-        # ignora tokens que são apenas números ou unidades
-        if re.match(r'^\d+([.,]\d+)?$', p):
-            continue
-        if p in {"g", "kg", "ml", "l", "un", "pk", "mg", "oz"}:
-            continue
-        tokens.append(p)
-    return tokens
-
-
 def corrigir_nome(produto, lista_oficial):
-    """
-    Corrige o nome usando fuzzy matching com critérios adicionais para evitar
-    substituições erradas (p.ex. 'Ketchup Heinz' -> 'Molho Real Zafran').
-    """
-    if not produto or not produto.strip():
+    """Corrige o nome usando fuzzy matching, mantendo acentos do nome oficial."""
+    if not produto.strip():
         return ""
-
-    produto_raw = produto.strip()
-    produto_norm = remove_accents(produto_raw).lower()
-
-    # normaliza lista oficial
+    produto_norm = remove_accents(produto).lower()
     lista_norm = [remove_accents(p).lower() for p in lista_oficial]
 
-    # 1) se já for exatamente um nome oficial (normalizado), retorna a oficial
-    for i, norm in enumerate(lista_norm):
-        if norm == produto_norm:
-            if DEBUG:
-                print(f"[corrigir_nome] exact match: {lista_oficial[i]}")
-            return lista_oficial[i]
-
-    # tokens "úteis" para checagem de palavras em comum
-    produto_tokens = set(tokenize_core(produto_raw))
-
-    # 2) pega top candidates pelo token_sort_ratio
-    candidatos = process.extract(
-        produto_norm, lista_norm, scorer=fuzz.token_sort_ratio, limit=8)
-
-    best_candidate = None
-    best_score_combined = -1
-
-    for cand_norm, score_ts, idx in candidatos:
-        candidato_oficial = lista_oficial[idx]
-        candidato_tokens = set(tokenize_core(candidato_oficial))
-
-        shared = produto_tokens & candidato_tokens
-        shared_count = len(shared)
-
-        # calcula partial ratio também (útil pra trechos)
-        score_partial = fuzz.partial_ratio(produto_norm, cand_norm)
-
-        if DEBUG:
-            print(
-                f"[corrigir_nome] candidate='{candidato_oficial}' ts={score_ts} partial={score_partial} shared={shared}")
-
-        accept = False
-        # criterio 1: token_sort alto + pelo menos um token em comum
-        if score_ts >= MIN_SCORE_TOKEN_SORT and shared_count >= MIN_SHARED_TOKENS:
-            accept = True
-            score_combined = max(score_ts, score_partial)
-        # criterio 2: partial ratio muito alto + pelo menos um token em comum
-        elif score_partial >= MIN_SCORE_PARTIAL and shared_count >= MIN_SHARED_TOKENS:
-            accept = True
-            score_combined = max(score_ts, score_partial)
-        else:
-            accept = False
-            score_combined = max(score_ts, score_partial)
-
-        if accept and score_combined > best_score_combined:
-            best_score_combined = score_combined
-            best_candidate = candidato_oficial
-
-    if best_candidate:
-        if DEBUG:
-            print(
-                f"[corrigir_nome] accepted: {best_candidate} (score {best_score_combined})")
-        return best_candidate
-
-    # fallback: não arriscar — retorna o texto original do usuário
-    if DEBUG:
-        print(f"[corrigir_nome] fallback keep original: '{produto_raw}'")
-    return produto_raw
+    resultado = process.extractOne(produto_norm, lista_norm, scorer=fuzz.ratio)
+    if resultado:
+        idx = resultado[2]  # índice do nome oficial
+        score = resultado[1]
+        if score >= 60:  # ajustável
+            return lista_oficial[idx]
+    return produto.strip()
 
 # =============================
 # Função de digitação automática
@@ -176,10 +89,11 @@ def digitar_estoque():
 
     messagebox.showinfo("Sucesso", "Digitação automática concluída!")
 
-
 # =============================
 # Interface Gráfica
 # =============================
+
+
 root = tk.Tk()
 root.title("📦 Automação de Contagem")
 root.geometry("550x650")
