@@ -11,7 +11,7 @@ raw_list = [
     "5 Mostarda Heinz Mel 220g",  # without hyphen
     "3- Molho Tártaro 1,05kg",
     "16 Molho Alho e Ervas 215g",
-    "22 Ketchup Heinz Curry 397g"
+    "22 Ketchup Heinz Curry 397g",
     "18- Molh Grill 1,05kg",        # erro no nome
     "15 -Molo Barbcue 1,05kg",     # erro no nome
     "31 - Molho Chpotl 1,05kg",    # erro no nome
