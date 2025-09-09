@@ -50,40 +50,24 @@ def digitar_estoque():
         return
 
     messagebox.showinfo(
-        "Atenção",
-        "Posicione o cursor no campo de produto do sistema.\n"
-        "A digitação automática começará em 5 segundos."
-    )
-    time.sleep(5)
+        "Atenção", "Posicione o cursor no sistema. Digitação começa em 5 segundos.")
+    time.sleep(5)  # tempo para posicionar o cursor
 
     for item in estoque:
         quantidade = item.get("quantidade", 0)
         produto_nome = item.get("produto", "").strip()
-        if not produto_nome or quantidade <= 0:
+        if not produto_nome:
             continue
 
         nome_corrigido = corrigir_nome(produto_nome, produtos_oficiais)
+        texto_para_digitar = f"{quantidade} {nome_corrigido}"
 
-        # ===== Passo 1: digitar produto =====
-        pyperclip.copy(nome_corrigido)
+        print(f"Digitando: {texto_para_digitar}")  # DEBUG
+
+        # Usa clipboard para suportar acentos
+        pyperclip.copy(texto_para_digitar)
         pyautogui.hotkey("ctrl", "v")
         time.sleep(delay_enter)
-
-        # ===== Passo 2: selecionar sugestão do autocomplete =====
-        pyautogui.press("down")  # seta para selecionar sugestão
-        pyautogui.press("enter")
-        time.sleep(delay_enter)
-
-        # ===== Passo 3: ir para campo de quantidade =====
-        pyautogui.press("tab")
-        time.sleep(delay_enter)
-
-        # ===== Passo 4: digitar quantidade =====
-        pyperclip.copy(str(quantidade))
-        pyautogui.hotkey("ctrl", "v")
-        time.sleep(delay_enter)
-
-        # ===== Passo 5: confirmar enter =====
         pyautogui.press("enter")
         time.sleep(delay_item)
 
@@ -150,13 +134,13 @@ frame_delays.pack(pady=10, fill="x")
 tk.Label(frame_delays, text="⏱ Tempo entre Enter (segundos):").grid(
     row=0, column=0, sticky="w")
 entry_delay_enter = tk.Entry(frame_delays)
-entry_delay_enter.insert(0, "0.2")
+entry_delay_enter.insert(0, "0.2")  # valor padrão
 entry_delay_enter.grid(row=0, column=1)
 
 tk.Label(frame_delays, text="⏱ Tempo entre itens (segundos):").grid(
     row=1, column=0, sticky="w")
 entry_delay_item = tk.Entry(frame_delays)
-entry_delay_item.insert(0, "0.5")
+entry_delay_item.insert(0, "0.5")  # valor padrão
 entry_delay_item.grid(row=1, column=1)
 
 # Botão de digitação

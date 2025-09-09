@@ -1,26 +1,17 @@
 
 # Raw list examples (pasted from WhatsApp)
-# raw_list = [
-#     "18- Molho Grill 1,05kg",
-#     "15 -Molho barbecue 1,05kg",
-#     "31 - Molho Chipotle 1,05kg",
-#     "7- Molho Barbecue 1,05kg",
-#     "   20 - Ketchup real 1,05kg  ",
-#     "31- Molho Chipotle 1,05kg",  # duplicate example
-#     "12 Maionese Heinz 215g",     # without hyphen
-#     "5 Mostarda Heinz Mel 220g",  # without hyphen
-#     "3- Molho Tártaro 1,05kg",
-#     "16 Molho Alho e Ervas 215g",
-#     "22 Ketchup Heinz Curry 397g"
-# ]
-
 raw_list = [
-    "18- Molh Grill 1,05kg",        # erro no nome
-    "15 -Molho Barbcue 1,05kg",     # erro no nome
-    "31 - Molho Chipotl 1,05kg",    # erro no nome
-    "7- Molho Barbecue 1,05kg",     # correto
-    "20 - Ketchp Real 1,05kg",      # erro no nome
-    "3- Molho Trtaro 1,05kg"        # erro no nome
+    "18- Molho Grill 1,05kg",
+    "15 -Molho barbecue 1,05kg",
+    "31 - Molho Chipotle 1,05kg",
+    "7- Molho Barbecue 1,05kg",
+    "   20 - Ketchup real 1,05kg  ",
+    "31- Molho Chipotle 1,05kg",  # duplicate example
+    "12 Maionese Heinz 215g",     # without hyphen
+    "5 Mostarda Heinz Mel 220g",  # without hyphen
+    "3- Molho Tártaro 1,05kg",
+    "16 Molho Alho e Ervas 215g",
+    "22 Ketchup Heinz Curry 397g"
 ]
 
 
